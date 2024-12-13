@@ -29,5 +29,6 @@ itertools = "0.13.0"
 pico-args = "0.5.0"
 tailsome = "1.0.0"
 tinyjson = "2.5.1"
+velcro = "0.5.4"
 
 # Solution dependencies
