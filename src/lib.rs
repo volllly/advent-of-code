@@ -1,9 +1,15 @@
-use std::{fmt::Debug, ops::Add, str::FromStr};
+use std::{
+    fmt::Debug,
+    ops::{Add, Deref, DerefMut, Index, IndexMut},
+    str::FromStr,
+};
 
 use chumsky::prelude::*;
 use tailsome::IntoResult;
 
 pub mod template;
+
+pub mod arena;
 
 pub fn int<T>() -> impl Parser<char, T, Error = Simple<char>>
 where
@@ -105,5 +111,64 @@ impl Add<Direction> for Coordinate {
                 y: self.y,
             },
         }
+    }
+}
+
+pub struct Map<T>(Vec<Vec<T>>);
+
+impl<T> Map<T> {
+    pub fn dimensions(&self) -> Coordinate {
+        Coordinate {
+            y: self.0.len() as i64,
+            x: self.0[0].len() as i64,
+        }
+    }
+
+    pub fn cells(&self) -> impl Iterator<Item = (Coordinate, &T)> {
+        self.0.iter().enumerate().flat_map(|(y, row)| {
+            row.iter().enumerate().map(move |(x, cell)| {
+                (
+                    Coordinate {
+                        x: x as i64,
+                        y: y as i64,
+                    },
+                    cell,
+                )
+            })
+        })
+    }
+}
+
+impl<T> From<Vec<Vec<T>>> for Map<T> {
+    fn from(value: Vec<Vec<T>>) -> Self {
+        Map(value)
+    }
+}
+
+impl<T> Deref for Map<T> {
+    type Target = Vec<Vec<T>>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<T> DerefMut for Map<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+impl<T> Index<Coordinate> for Map<T> {
+    type Output = T;
+
+    fn index(&self, index: Coordinate) -> &Self::Output {
+        &self.0[index.y as usize][index.x as usize]
+    }
+}
+
+impl<T> IndexMut<Coordinate> for Map<T> {
+    fn index_mut(&mut self, index: Coordinate) -> &mut Self::Output {
+        &mut self.0[index.y as usize][index.x as usize]
     }
 }
