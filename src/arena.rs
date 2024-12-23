@@ -3,7 +3,7 @@ use std::{
     ops::{Index, IndexMut},
 };
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Debug)]
 pub struct Id<T> {
     id: usize,
     __p: PhantomData<T>,
@@ -25,6 +25,10 @@ impl<T> Id<T> {
         }
     }
 
+    pub fn id(&self) -> usize {
+        self.id
+    }
+
     pub fn get(self, arena: &impl AsRef<Arena<T>>) -> &T {
         &arena.as_ref()[self]
     }
@@ -34,9 +38,29 @@ impl<T> Id<T> {
     }
 }
 
-#[derive(Default)]
+#[derive(Debug)]
 pub struct Arena<T> {
     data: Vec<T>,
+}
+
+impl<T> AsRef<Arena<T>> for Arena<T> {
+    fn as_ref(&self) -> &Arena<T> {
+        self
+    }
+}
+
+impl<T> AsMut<Arena<T>> for Arena<T> {
+    fn as_mut(&mut self) -> &mut Arena<T> {
+        self
+    }
+}
+
+impl<T> Default for Arena<T> {
+    fn default() -> Self {
+        Self {
+            data: Default::default(),
+        }
+    }
 }
 
 impl<T> Index<Id<T>> for Arena<T> {
@@ -74,7 +98,7 @@ impl<T> Arena<T> {
         self.data.get_mut(id.id)
     }
 
-    pub fn ids(&self) -> impl Iterator<Item = Id<T>> {
+    pub fn ids(&self) -> impl DoubleEndedIterator<Item = Id<T>> {
         (0..self.data.len()).map(Id::from)
     }
 }
