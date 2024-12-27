@@ -25,6 +25,7 @@ bon = "3.3.0"
 # Template dependencies
 chrono = { version = "0.4.38", optional = true }
 chumsky = "0.9.3"
+dashmap = { version = "6.1.0" }
 dhat = { version = "0.3.3", optional = true }
 indicatif = "0.17.9"
 itertools = "0.13.0"

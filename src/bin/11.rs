@@ -1,22 +1,43 @@
-use std::{collections::HashMap, str::FromStr};
+use std::{str::FromStr, sync::Arc};
 
-use chumsky::{chain::Chain, prelude::*};
-use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
-use itertools::Itertools;
+use chumsky::prelude::*;
+use dashmap::DashMap;
+use indicatif::{ProgressBar, ProgressStyle};
+use rayon::iter::{IntoParallelIterator, IntoParallelRefIterator, ParallelIterator};
 use tailsome::IntoOption;
 
 advent_of_code::solution!(11);
 
+#[derive(Default)]
+struct SolutionCache(Arc<DashMap<u64, Vec<u64>>>);
+
+impl Clone for SolutionCache {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
+}
+
+#[derive(Default)]
+struct CycleCache(Arc<DashMap<(u64, usize), u64>>);
+
+impl Clone for CycleCache {
+    fn clone(&self) -> Self {
+        Self(self.0.clone())
+    }
+}
+
 struct Puzzle {
-    stones: Stones,
-    cache: HashMap<u64, Vec<u64>>,
+    stones: Vec<u64>,
+    solution_cache: SolutionCache,
+    cycle_cache: CycleCache,
 }
 
 impl Puzzle {
     fn from(from: Vec<u64>) -> Self {
         Self {
-            stones: Stones(from),
-            cache: Default::default(),
+            stones: from,
+            solution_cache: Default::default(),
+            cycle_cache: Default::default(),
         }
     }
 }
@@ -34,76 +55,91 @@ impl FromStr for Puzzle {
 }
 
 impl Puzzle {
-    fn blink(&mut self, times: usize) -> usize {
-        let progress = MultiProgress::new();
-        let blink_progress = ProgressBar::new(times as u64);
+    fn blink(&mut self, times: usize) -> u64 {
+        let blink_progress = ProgressBar::new(self.stones.len() as u64);
         blink_progress.set_style(
             ProgressStyle::with_template(
                 "[{elapsed_precise}] [{wide_bar}] ({pos}/{len}, ETA {eta}) {msg}",
             )
             .unwrap(),
         );
-        progress.add(blink_progress.clone());
 
-        let mut stones = self.stones.clone();
-        for _ in 0..times {
-            let stone_progress = ProgressBar::new(stones.0.len() as u64);
-            stone_progress.set_style(
-                ProgressStyle::with_template(
-                    "[{elapsed_precise}] [{wide_bar}] ({pos}/{len}, ETA {eta})",
-                )
-                .unwrap(),
-            );
-            progress.add(stone_progress.clone());
+        let sum = self
+            .stones
+            .par_iter()
+            .map(|stone| {
+                let sum = Self::evaluate(
+                    *stone,
+                    self.solution_cache.clone(),
+                    self.cycle_cache.clone(),
+                    times,
+                );
+                blink_progress.inc(1);
+                sum
+            })
+            .sum();
 
-            stones = stones.next(stone_progress.clone(), &mut self.cache);
-
-            progress.remove(&stone_progress);
-            blink_progress.inc(1);
-            blink_progress.set_message(format!("[cached: {}]", self.cache.len()));
-        }
         blink_progress.finish();
-        stones.0.len()
+        sum
     }
-}
 
-#[derive(Clone)]
-struct Stones(Vec<u64>);
-
-impl Stones {
-    fn next(self, progress: ProgressBar, cache: &mut HashMap<u64, Vec<u64>>) -> Stones {
-        let mut next = Vec::<u64>::with_capacity(self.len() * 2);
-
-        for stone in self.0 {
-            let new = cache.entry(stone).or_insert_with(|| {
-                if stone == 0 {
-                    vec![1]
-                } else {
-                    let digits = stone.ilog10();
-                    if digits % 2 == 1 {
-                        let cutoff = 10i32.pow((digits + 1) / 2) as u64;
-                        let left = stone / cutoff;
-                        let right = stone - left * cutoff;
-                        vec![left, right]
-                    } else {
-                        vec![stone * 2024]
-                    }
-                }
-            });
-            next.extend_from_slice(new);
-            progress.inc(1);
+    fn evaluate(
+        stone: u64,
+        solution_cache: SolutionCache,
+        cycle_cache: CycleCache,
+        times: usize,
+    ) -> u64 {
+        if times == 0 {
+            return 1;
         }
-        progress.finish();
-        Stones(next)
+        if let Some(cached) = cycle_cache.0.get(&(stone, times)) {
+            return *cached;
+        }
+
+        let new = if let Some(cached) = solution_cache.0.get(&stone) {
+            cached.clone()
+        } else {
+            let new = if stone == 0 {
+                vec![1]
+            } else {
+                let digits = stone.ilog10();
+                if digits % 2 == 1 {
+                    let cutoff = 10i32.pow((digits + 1) / 2) as u64;
+                    let left = stone / cutoff;
+                    let right = stone - left * cutoff;
+                    vec![left, right]
+                } else {
+                    vec![stone * 2024]
+                }
+            };
+
+            solution_cache.0.insert(stone, new.clone());
+            new
+        };
+
+        new.into_par_iter()
+            .map(|stone| {
+                let cycle = Self::evaluate(
+                    stone,
+                    solution_cache.clone(),
+                    cycle_cache.clone(),
+                    times - 1,
+                );
+
+                cycle_cache.0.entry((stone, times - 1)).or_insert(cycle);
+
+                cycle
+            })
+            .sum::<u64>()
     }
 }
 
-pub fn part_one(input: &str) -> Option<usize> {
+pub fn part_one(input: &str) -> Option<u64> {
     let mut puzzle = Puzzle::from_str(input).unwrap();
     puzzle.blink(25).into_some()
 }
 
-pub fn part_two(input: &str) -> Option<usize> {
+pub fn part_two(input: &str) -> Option<u64> {
     let mut puzzle = Puzzle::from_str(input).unwrap();
     puzzle.blink(75).into_some()
 }
