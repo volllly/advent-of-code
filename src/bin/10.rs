@@ -1,6 +1,5 @@
 use chumsky::prelude::*;
 use std::{
-    cmp::Ordering,
     collections::HashSet,
     fmt::{Debug, Display},
     str::FromStr,
