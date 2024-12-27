@@ -1,5 +1,5 @@
 use std::{
-    fmt::Debug,
+    fmt::{Debug, Display, Write},
     ops::{Add, Deref, DerefMut, Index, IndexMut},
     str::FromStr,
 };
@@ -11,7 +11,7 @@ pub mod template;
 
 pub mod arena;
 
-pub fn int<T>() -> impl Parser<char, T, Error = Simple<char>>
+pub fn ints<T>() -> impl Parser<char, T, Error = Simple<char>>
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
@@ -19,6 +19,13 @@ where
     text::int::<char, Simple<_>>(10).try_map(|s: String, span| {
         s.parse::<T>()
             .map_err(|e| Simple::custom(span, format!("{:?}", e)))
+    })
+}
+
+pub fn int() -> impl Parser<char, u32, Error = Simple<char>> {
+    filter(|c: &char| c.is_ascii_digit()).try_map(|c: char, span| {
+        c.to_digit(10)
+            .ok_or_else(|| Simple::custom(span, format!("cloud not parse digit {}", c)))
     })
 }
 
@@ -114,7 +121,25 @@ impl Add<Direction> for Coordinate {
     }
 }
 
+#[derive(Debug)]
 pub struct Map<T>(Vec<Vec<T>>);
+
+impl<T> Display for Map<T>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_char('\n')?;
+        for row in self.iter() {
+            for cell in row {
+                f.write_fmt(format_args!("{}", cell))?;
+            }
+            f.write_char('\n')?;
+        }
+
+        Ok(())
+    }
+}
 
 impl<T> Map<T> {
     pub fn dimensions(&self) -> Coordinate {
@@ -122,6 +147,17 @@ impl<T> Map<T> {
             y: self.0.len() as i64,
             x: self.0[0].len() as i64,
         }
+    }
+
+    pub fn coordinates(&self) -> impl Iterator<Item = Coordinate> {
+        let cols = self.0[0].len();
+
+        (0..self.0.len()).flat_map(move |y| {
+            (0..cols).map(move |x| Coordinate {
+                x: x as i64,
+                y: y as i64,
+            })
+        })
     }
 
     pub fn cells(&self) -> impl Iterator<Item = (Coordinate, &T)> {
@@ -136,6 +172,32 @@ impl<T> Map<T> {
                 )
             })
         })
+    }
+
+    pub fn cells_mut(&mut self) -> impl Iterator<Item = (Coordinate, &mut T)> {
+        self.0.iter_mut().enumerate().flat_map(|(y, row)| {
+            row.iter_mut().enumerate().map(move |(x, cell)| {
+                (
+                    Coordinate {
+                        x: x as i64,
+                        y: y as i64,
+                    },
+                    cell,
+                )
+            })
+        })
+    }
+
+    pub fn cell(&self, position: Coordinate) -> Option<&T> {
+        self.0
+            .get(position.y as usize)
+            .and_then(|row| row.get(position.x as usize))
+    }
+
+    pub fn cell_mut(&mut self, position: Coordinate) -> Option<&mut T> {
+        self.0
+            .get_mut(position.y as usize)
+            .and_then(|row| row.get_mut(position.x as usize))
     }
 }
 
