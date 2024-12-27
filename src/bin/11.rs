@@ -2,7 +2,6 @@ use std::{str::FromStr, sync::Arc};
 
 use chumsky::prelude::*;
 use dashmap::DashMap;
-use indicatif::{ProgressBar, ProgressStyle};
 use rayon::iter::{IntoParallelIterator, IntoParallelRefIterator, ParallelIterator};
 use tailsome::IntoOption;
 
@@ -56,30 +55,19 @@ impl FromStr for Puzzle {
 
 impl Puzzle {
     fn blink(&mut self, times: usize) -> u64 {
-        let blink_progress = ProgressBar::new(self.stones.len() as u64);
-        blink_progress.set_style(
-            ProgressStyle::with_template(
-                "[{elapsed_precise}] [{wide_bar}] ({pos}/{len}, ETA {eta}) {msg}",
-            )
-            .unwrap(),
-        );
-
         let sum = self
             .stones
             .par_iter()
             .map(|stone| {
-                let sum = Self::evaluate(
+                Self::evaluate(
                     *stone,
                     self.solution_cache.clone(),
                     self.cycle_cache.clone(),
                     times,
-                );
-                blink_progress.inc(1);
-                sum
+                )
             })
             .sum();
 
-        blink_progress.finish();
         sum
     }
 
