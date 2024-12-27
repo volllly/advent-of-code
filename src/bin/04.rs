@@ -6,6 +6,7 @@ advent_of_code::solution!(4);
 #[derive(Debug)]
 enum Cell {
     Ignore,
+    #[allow(clippy::upper_case_acronyms)]
     XMAS(u8),
 }
 

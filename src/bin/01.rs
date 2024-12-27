@@ -1,5 +1,4 @@
 use chumsky::prelude::*;
-use itertools::Itertools;
 use tailsome::IntoOption;
 
 advent_of_code::solution!(1);
@@ -22,7 +21,6 @@ pub fn part_one(input: &str) -> Option<u32> {
     b.sort();
 
     let input = a.into_iter().zip(b).collect::<Vec<_>>();
-    println!("{:?}", input);
 
     input
         .into_iter()

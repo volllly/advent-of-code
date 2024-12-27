@@ -1,5 +1,5 @@
 use chumsky::{
-    prelude::{any, just, take_until},
+    prelude::{just, take_until},
     Parser,
 };
 use tailsome::IntoOption;

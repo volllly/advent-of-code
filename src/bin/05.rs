@@ -1,9 +1,7 @@
 use chumsky::prelude::*;
 use std::{
-    collections::{hash_set, HashMap, HashSet},
-    path::MAIN_SEPARATOR,
+    collections::{HashMap, HashSet},
     str::FromStr,
-    vec,
 };
 use tailsome::IntoOption;
 
@@ -47,7 +45,7 @@ impl Order {
         true
     }
 
-    fn correct_update(&mut self, update: &mut Vec<u32>) -> bool {
+    fn correct_update(&mut self, update: &mut [u32]) -> bool {
         let mut valid = true;
         for page in 0..update.len() {
             if let Some(after) = self.after.get(&update[page]) {
@@ -135,7 +133,6 @@ pub fn part_two(input: &str) -> Option<u32> {
 
     let invalid = puzzle.correct_updates();
 
-    dbg!(&invalid);
     invalid
         .into_iter()
         .map(|update| update[update.len() / 2])

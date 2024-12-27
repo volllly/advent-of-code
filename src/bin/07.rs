@@ -139,7 +139,7 @@ pub fn part_one(input: &str) -> Option<u64> {
 
     puzzle
         .ids()
-        .map(|id| id.get(&puzzle))
+        .map(|id| id.get(&puzzle).unwrap())
         .filter(|eq| eq.is_correct(2))
         .map(|eq| eq.result)
         .sum::<u64>()
@@ -151,7 +151,7 @@ pub fn part_two(input: &str) -> Option<u64> {
 
     puzzle
         .ids()
-        .map(|id| id.get(&puzzle))
+        .map(|id| id.get(&puzzle).unwrap())
         .filter(|eq| eq.is_correct(3))
         .map(|eq| eq.result)
         .sum::<u64>()

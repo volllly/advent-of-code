@@ -17,6 +17,7 @@ struct Puzzle {
     frequencies: HashMap<char, HashSet<Coordinate>>,
 }
 
+#[allow(dead_code)]
 struct Solved<'a>(&'a Puzzle, &'a HashSet<Coordinate>);
 
 impl Debug for Solved<'_> {
