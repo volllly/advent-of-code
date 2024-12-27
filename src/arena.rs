@@ -17,7 +17,7 @@ impl<T> Eq for Id<T> {}
 
 impl<T> PartialOrd for Id<T> {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        self.id.partial_cmp(&other.id)
+        Some(self.cmp(other))
     }
 }
 
@@ -161,8 +161,6 @@ impl<T> Arena<T> {
 
 #[cfg(test)]
 mod test {
-    use chumsky::chain::Chain;
-
     use super::Arena;
 
     #[test]
