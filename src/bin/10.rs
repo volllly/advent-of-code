@@ -22,7 +22,7 @@ impl FromStr for Puzzle {
     type Err = Vec<chumsky::error::Simple<char>>;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        advent_of_code::int()
+        advent_of_code::digit()
             .map(Cell::new)
             .repeated()
             .at_least(1)

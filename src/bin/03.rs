@@ -17,9 +17,9 @@ fn parse(input: &str) -> Vec<Operation> {
     take_until(
         just("mul")
             .ignore_then(just('('))
-            .ignore_then(advent_of_code::ints::<u32>())
+            .ignore_then(advent_of_code::int::<u32>())
             .then_ignore(just(','))
-            .then(advent_of_code::ints::<u32>())
+            .then(advent_of_code::int::<u32>())
             .then_ignore(just(')'))
             .map(|(a, b)| Operation::Mul(a, b))
             .or(just("do()").map(|_| Operation::Do))

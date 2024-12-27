@@ -72,15 +72,15 @@ impl FromStr for Puzzle {
     type Err = Vec<chumsky::error::Simple<char>>;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        advent_of_code::ints::<u32>()
+        advent_of_code::int::<u32>()
             .then_ignore(just('|'))
-            .then(advent_of_code::ints::<u32>())
+            .then(advent_of_code::int::<u32>())
             .separated_by(text::newline())
             .map(Order::from)
             .then_ignore(text::newline())
             .then_ignore(text::newline())
             .then(
-                advent_of_code::ints::<u32>()
+                advent_of_code::int::<u32>()
                     .separated_by(just(','))
                     .at_least(1)
                     .separated_by(text::newline())

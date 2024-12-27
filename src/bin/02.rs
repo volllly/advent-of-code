@@ -5,7 +5,7 @@ use tailsome::IntoOption;
 advent_of_code::solution!(2);
 
 fn parse(input: &str) -> Vec<Vec<u32>> {
-    advent_of_code::ints::<u32>()
+    advent_of_code::int::<u32>()
         .separated_by(just(' '))
         .at_least(1)
         .separated_by(text::newline())

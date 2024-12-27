@@ -119,10 +119,10 @@ impl FromStr for Puzzle {
     type Err = Vec<chumsky::error::Simple<char>>;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        advent_of_code::ints::<u64>()
+        advent_of_code::int::<u64>()
             .then_ignore(just(": "))
             .then(
-                advent_of_code::ints::<u64>()
+                advent_of_code::int::<u64>()
                     .separated_by(just(' '))
                     .at_least(1),
             )

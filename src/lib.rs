@@ -11,7 +11,7 @@ pub mod template;
 
 pub mod arena;
 
-pub fn ints<T>() -> impl Parser<char, T, Error = Simple<char>>
+pub fn int<T>() -> impl Parser<char, T, Error = Simple<char>>
 where
     T: FromStr,
     <T as FromStr>::Err: Debug,
@@ -22,7 +22,7 @@ where
     })
 }
 
-pub fn int() -> impl Parser<char, u32, Error = Simple<char>> {
+pub fn digit() -> impl Parser<char, u32, Error = Simple<char>> {
     filter(|c: &char| c.is_ascii_digit()).try_map(|c: char, span| {
         c.to_digit(10)
             .ok_or_else(|| Simple::custom(span, format!("cloud not parse digit {}", c)))
