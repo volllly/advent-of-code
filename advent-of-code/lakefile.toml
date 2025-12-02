@@ -1,0 +1,10 @@
+name = "advent-of-code"
+version = "0.1.0"
+defaultTargets = ["advent-of-code"]
+
+[[lean_lib]]
+name = "AdventOfCode"
+
+[[lean_exe]]
+name = "advent-of-code"
+root = "Main"
