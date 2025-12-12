@@ -26,6 +26,9 @@ library
   exposed-modules:
       Days.D01
       Days.D02
+      Days.D03
+      Days.D04
+      Days.D05
       Lib
       Rotation
   other-modules:
@@ -37,9 +40,11 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , data-interval
     , parsec
     , split
-  default-language: Haskell2010
+    , vector
+  default-language: GHC2021
 
 test-suite advent-of-code-test
   type: exitcode-stdio-1.0
@@ -47,6 +52,9 @@ test-suite advent-of-code-test
   other-modules:
       D01.Spec
       D02.Spec
+      D03.Spec
+      D04.Spec
+      D05.Spec
       Days
       Paths_advent_of_code
   autogen-modules:
@@ -57,7 +65,9 @@ test-suite advent-of-code-test
   build-depends:
       advent-of-code
     , base >=4.7 && <5
+    , data-interval
     , hspec
     , parsec
     , split
-  default-language: Haskell2010
+    , vector
+  default-language: GHC2021

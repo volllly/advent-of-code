@@ -1,8 +1,8 @@
 module D01.Spec (spec) where
 
 import Days (Day (..), test)
-import qualified Days as Part
-import qualified Days.D01 as D01
+import Days qualified as Part
+import Days.D01 qualified as D01
 import Test.Hspec (Spec)
 
 day :: Day

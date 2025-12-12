@@ -1,6 +1,4 @@
-{-# OPTIONS_GHC -Wno-name-shadowing #-}
-
-module Days.D02 (part1, part2) where
+module Days.D02 (part1, part2, Range (..), rangeParser) where
 
 import Data.List.Split (chunksOf)
 import Text.Parsec

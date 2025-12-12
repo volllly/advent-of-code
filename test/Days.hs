@@ -27,9 +27,8 @@ test :: Day -> [(Part, String, Int)] -> Spec
 test day tests =
   describe (show day) $
     for_ tests $ \(part, name, expected) ->
-      let testName = unwords ["solves", show part, name]
-          fileName = "test/D" ++ printf "%02d" (number day) ++ "/" ++ name
+      let fileName = "test/D" ++ printf "%02d" (number day) ++ "/" ++ name
        in describe (show part) $
-            it testName $ do
+            it name $ do
               fileContent <- readFile fileName
               solver part day fileContent `shouldBe` expected

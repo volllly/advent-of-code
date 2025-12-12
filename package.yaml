@@ -23,6 +23,10 @@ dependencies:
   - base >= 4.7 && < 5
   - parsec
   - split
+  - vector
+  - data-interval
+
+language: GHC2021
 
 ghc-options:
   - -Wall
