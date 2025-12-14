@@ -3,6 +3,7 @@ import D02.Spec qualified
 import D03.Spec qualified
 import D04.Spec qualified
 import D05.Spec qualified
+import D06.Spec qualified
 import Days (Day (..), solver)
 import System.IO.Unsafe (unsafePerformIO)
 import Test.Tasty.Bench
@@ -32,6 +33,7 @@ main =
           benchmark D02.Spec.day,
           benchmark D03.Spec.day,
           benchmark D04.Spec.day,
-          benchmark D05.Spec.day
+          benchmark D05.Spec.day,
+          benchmark D06.Spec.day
         ]
     ]

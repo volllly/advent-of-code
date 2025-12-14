@@ -29,6 +29,7 @@ library
       Days.D03
       Days.D04
       Days.D05
+      Days.D06
       Lib
       Rotation
   other-modules:
@@ -55,6 +56,7 @@ test-suite advent-of-code-test
       D03.Spec
       D04.Spec
       D05.Spec
+      D06.Spec
       Days
       Paths_advent_of_code
   autogen-modules:
@@ -83,6 +85,7 @@ benchmark advent-of-code-bench
       D03.Spec
       D04.Spec
       D05.Spec
+      D06.Spec
       Days
       Paths_advent_of_code
   autogen-modules:
