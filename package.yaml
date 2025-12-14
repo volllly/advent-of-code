@@ -45,11 +45,30 @@ library:
 tests:
   advent-of-code-test:
     main: Spec.hs
-    source-dirs: test
+    source-dirs:
+      - tests
+      - test
     ghc-options:
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
       - advent-of-code
-      - hspec
+      - tasty
+      - tasty-hunit
+
+benchmarks:
+  advent-of-code-bench:
+    main: Bench.hs
+    source-dirs:
+      - test
+      - bench
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - advent-of-code
+      - tasty
+      - tasty-bench
+      - tasty-hunit

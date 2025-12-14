@@ -60,14 +60,45 @@ test-suite advent-of-code-test
   autogen-modules:
       Paths_advent_of_code
   hs-source-dirs:
+      tests
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       advent-of-code
     , base >=4.7 && <5
     , data-interval
-    , hspec
     , parsec
     , split
+    , tasty
+    , tasty-hunit
+    , vector
+  default-language: GHC2021
+
+benchmark advent-of-code-bench
+  type: exitcode-stdio-1.0
+  main-is: Bench.hs
+  other-modules:
+      D01.Spec
+      D02.Spec
+      D03.Spec
+      D04.Spec
+      D05.Spec
+      Days
+      Paths_advent_of_code
+  autogen-modules:
+      Paths_advent_of_code
+  hs-source-dirs:
+      test
+      bench
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      advent-of-code
+    , base >=4.7 && <5
+    , data-interval
+    , parsec
+    , split
+    , tasty
+    , tasty-bench
+    , tasty-hunit
     , vector
   default-language: GHC2021

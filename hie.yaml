@@ -5,3 +5,12 @@ cradle:
 
     - path: "./test"
       component: "advent-of-code:test:advent-of-code-test"
+
+    - path: "./tests"
+      component: "advent-of-code:test:advent-of-code-test"
+
+    - path: "./bench"
+      component: "advent-of-code:bench:advent-of-code-bench"
+
+    - path: "./tests"
+      component: "advent-of-code:bench:advent-of-code-bench"
