@@ -25,6 +25,7 @@ dependencies:
   - split
   - vector
   - data-interval
+  - containers
 
 language: GHC2021
 

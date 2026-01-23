@@ -2,9 +2,7 @@ module Days.D06 (part1, part2) where
 
 import Data.Function ((&))
 import Data.List (groupBy, transpose)
-import Data.Maybe (catMaybes, fromJust, isJust, isNothing)
-import Debug.Trace (traceShow)
-import Lib (inspect)
+import Data.Maybe (catMaybes, fromJust, isNothing)
 import Text.Read (readMaybe)
 
 data Operator = Add | Multiply

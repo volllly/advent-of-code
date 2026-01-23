@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.38.1.
+-- This file has been generated from package.yaml by hpack version 0.39.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -30,6 +30,7 @@ library
       Days.D04
       Days.D05
       Days.D06
+      Days.D07
       Lib
       Rotation
   other-modules:
@@ -41,6 +42,7 @@ library
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       base >=4.7 && <5
+    , containers
     , data-interval
     , parsec
     , split
@@ -57,6 +59,7 @@ test-suite advent-of-code-test
       D04.Spec
       D05.Spec
       D06.Spec
+      D07.Spec
       Days
       Paths_advent_of_code
   autogen-modules:
@@ -68,6 +71,7 @@ test-suite advent-of-code-test
   build-depends:
       advent-of-code
     , base >=4.7 && <5
+    , containers
     , data-interval
     , parsec
     , split
@@ -86,6 +90,7 @@ benchmark advent-of-code-bench
       D04.Spec
       D05.Spec
       D06.Spec
+      D07.Spec
       Days
       Paths_advent_of_code
   autogen-modules:
@@ -97,6 +102,7 @@ benchmark advent-of-code-bench
   build-depends:
       advent-of-code
     , base >=4.7 && <5
+    , containers
     , data-interval
     , parsec
     , split

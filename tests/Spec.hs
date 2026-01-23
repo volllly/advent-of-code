@@ -4,6 +4,7 @@ import D03.Spec qualified
 import D04.Spec qualified
 import D05.Spec qualified
 import D06.Spec qualified
+import D07.Spec qualified
 import Days (Day (..), solver)
 import Test.Tasty
 import Test.Tasty.HUnit (testCase, (@?=))
@@ -35,5 +36,6 @@ main =
         test D03.Spec.day,
         test D04.Spec.day,
         test D05.Spec.day,
-        test D06.Spec.day
+        test D06.Spec.day,
+        test D07.Spec.day
       ]
