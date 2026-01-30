@@ -2,25 +2,36 @@ module Days.D08 (part1, part2) where
 
 import Data.Containers.ListUtils (nubOrdOn)
 import Data.Function ((&))
+import Data.Functor ((<&>))
 import Data.List (findIndex, sort, sortOn)
 import Data.List.Split (splitOn)
 import Data.Maybe (fromJust, fromMaybe)
-import Data.Set (Set (..), member)
+import Data.Set (Set, member)
 import Data.Set qualified
 import Linear (Metric (distance))
 import Linear.V3 (V3 (..))
 
 parseInput :: String -> [V3 Int]
 parseInput input =
-  map (\t -> let [x, y, z] = map read (splitOn "," t) in V3 x y z) $ lines input
+  ( \t -> case read <$> splitOn "," t of
+      [x, y, z] -> V3 x y z
+      _ -> undefined
+  )
+    <$> lines input
+
+ordered :: [V3 Int] -> [(V3 Int, V3 Int)]
+ordered junctions =
+  let calculateDistances :: V3 Int -> [(Double, (V3 Int, V3 Int))]
+      calculateDistances from = [(d, (from, j)) | j <- junctions, let d = distance (fromIntegral <$> from) (fromIntegral <$> j), d /= 0]
+      withDistances = junctions <&> calculateDistances & concat
+   in withDistances & nubOrdOn (\(_, (a, b)) -> (min a b, max a b)) & sortOn fst <&> snd
 
 part1 :: Int -> String -> Int
 part1 amount input =
   let junctions = parseInput input
-      distances from = map (\j -> (distance (fmap fromIntegral from) (fmap fromIntegral j), (from, j))) junctions & filter (\(d, _) -> d /= 0)
-      nearest = junctions & map distances & concat & nubOrdOn (\(_, (a, b)) -> if a > b then (a, b) else (b, a)) & sortOn (\(d, _) -> d) & map snd
+      nearest = ordered junctions
       groups = groupJunctions amount nearest $ map Data.Set.singleton junctions
-   in product $ take 3 $ reverse $ sort $ map length groups
+   in product $ take 3 $ reverse $ sort $ length <$> groups
 
 filterIndexed :: (a -> Int -> Bool) -> [a] -> [a]
 filterIndexed p xs = [x | (x, i) <- zip xs [0 ..], p x i]
@@ -48,7 +59,6 @@ groupAllJunctions (nearest : rest) latest groups =
 part2 :: Int -> String -> Int
 part2 _ input =
   let junctions = parseInput input
-      distances from = map (\j -> (distance (fmap fromIntegral from) (fmap fromIntegral j), (from, j))) junctions & filter (\(d, _) -> d /= 0)
-      nearest = junctions & map distances & concat & nubOrdOn (\(_, (a, b)) -> if a > b then (a, b) else (b, a)) & sortOn (\(d, _) -> d) & map snd
-      ((V3 x1 _ _, V3 x2 _ _), _) = groupAllJunctions nearest Nothing $ map Data.Set.singleton junctions
+      nearest = ordered junctions
+      ((V3 x1 _ _, V3 x2 _ _), _) = groupAllJunctions nearest Nothing $ Data.Set.singleton <$> junctions
    in x1 * x2
