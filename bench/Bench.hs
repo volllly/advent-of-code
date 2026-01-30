@@ -6,21 +6,21 @@ import D05.Spec qualified
 import D06.Spec qualified
 import D07.Spec qualified
 import D08.Spec qualified
-import Days (Day (..), solver)
+import Days (Day' (..), solver)
 import System.IO.Unsafe (unsafePerformIO)
 import Test.Tasty.Bench
 import Text.Printf (printf)
 
-benchmark :: Day -> Benchmark
+benchmark :: Day' a -> Benchmark
 benchmark day =
   bgroup (show day) $
     foldMap
-      ( \(part, name, _) ->
+      ( \(part, name, args, _) ->
           let fileName = "test/D" ++ printf "%02d" (number day) ++ "/" ++ name
               fileContent = unsafePerformIO $ readFile fileName
            in [ bgroup
                   (show part)
-                  [ bench name $ nf (solver part day) fileContent
+                  [ bench name $ nf (solver part day args) fileContent
                   ]
               ]
       )
