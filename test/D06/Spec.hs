@@ -1,6 +1,6 @@
 module D06.Spec (day) where
 
-import Days (Day (..))
+import Days (Day, Day' (Day))
 import Days qualified as Part
 import Days.D06 qualified as D06
 

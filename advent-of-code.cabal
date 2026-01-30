@@ -31,6 +31,7 @@ library
       Days.D05
       Days.D06
       Days.D07
+      Days.D08
       Lib
       Rotation
   other-modules:
@@ -44,6 +45,7 @@ library
       base >=4.7 && <5
     , containers
     , data-interval
+    , linear
     , parsec
     , split
     , vector
@@ -60,6 +62,7 @@ test-suite advent-of-code-test
       D05.Spec
       D06.Spec
       D07.Spec
+      D08.Spec
       Days
       Paths_advent_of_code
   autogen-modules:
@@ -73,6 +76,7 @@ test-suite advent-of-code-test
     , base >=4.7 && <5
     , containers
     , data-interval
+    , linear
     , parsec
     , split
     , tasty
@@ -91,6 +95,7 @@ benchmark advent-of-code-bench
       D05.Spec
       D06.Spec
       D07.Spec
+      D08.Spec
       Days
       Paths_advent_of_code
   autogen-modules:
@@ -104,6 +109,7 @@ benchmark advent-of-code-bench
     , base >=4.7 && <5
     , containers
     , data-interval
+    , linear
     , parsec
     , split
     , tasty

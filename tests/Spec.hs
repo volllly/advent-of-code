@@ -5,22 +5,23 @@ import D04.Spec qualified
 import D05.Spec qualified
 import D06.Spec qualified
 import D07.Spec qualified
-import Days (Day (..), solver)
+import D08.Spec qualified
+import Days (Day' (..), solver)
 import Test.Tasty
 import Test.Tasty.HUnit (testCase, (@?=))
 import Text.Printf (printf)
 
-test :: Day -> TestTree
+test :: Day' a -> TestTree
 test day =
   testGroup (show day) $
     foldMap
-      ( \(part, name, expected) ->
+      ( \(part, name, args, expected) ->
           let fileName = "test/D" ++ printf "%02d" (number day) ++ "/" ++ name
            in [ testGroup
                   (show part)
                   [ testCase name $ do
                       fileContent <- readFile fileName
-                      solver part day fileContent @?= expected
+                      solver part day args fileContent @?= expected
                   ]
               ]
       )
@@ -37,5 +38,6 @@ main =
         test D04.Spec.day,
         test D05.Spec.day,
         test D06.Spec.day,
-        test D07.Spec.day
+        test D07.Spec.day,
+        test D08.Spec.day
       ]
